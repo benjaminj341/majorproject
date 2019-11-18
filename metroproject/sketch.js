@@ -1,32 +1,29 @@
-let shapes = [];
+let gameWidth = 1500;
+let gameHeight = 800;
+
+function preload(){
+  city = loadImage('assets/city.jpg');
+}
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
 }
 
 function draw() {
-  background(0);
-  for (let i = - 1; i < shapes.length - 1; i++) {
-      if (shapes[i].y - shapes[i].radius > height){
-        shapes.splice(i, 1);
-      }
-      else{
-        shapes[i].y += shapes[i].dy;
-      }  
-    noStroke();
-    fill(shapes[i].color);
-    ellipse(shapes[i].x, shapes[i].y, shapes[i].radius*2, shapes[i].radius*2);
-  }
+  background(225);
+  image(city, 0, 0, gameWidth, gameHeight);
+  //makeGrid();
 }
 
-function mousePressed() {
-  let someShape = {
-    x: mouseX,
-    y: mouseY,
-    radius: random(10, 50),
-    color: color(random(255), random(255), random(255), random(255)),
-    dy: random(1, 20)
-  };
-
-  shapes.push(someShape);
+function makeGrid(){
+  for (let x = 0; x < gameWidth/150; x + 150){
+    for (let y = 0; y < gameHeight/200; y + 200){
+      strokeWeight(3);
+      stroke(0);
+      line(x, y, x + 150, y);
+      line(x + 150, y, x + 150, y + 200);
+      line(x + 150, y + 200, x, y + 200);
+      line(x, y + 200, x, y);
+    }
+  }
 }
