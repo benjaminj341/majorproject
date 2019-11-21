@@ -6,6 +6,9 @@ let sectors = [];
 let cellWidth = 150;
 let cellHeight = 200;
 let mouseMode = "normal";
+let screenMode = "normal";
+let money = 1000;
+let stations = [];
 
 function preload(){
   city = loadImage('assets/city.jpg');
@@ -20,6 +23,20 @@ function draw() {
   background(225);
   image(city, 0, 0, gameWidth, gameHeight);  
   displayGrid();
+  displayStations();
+
+  if (screenMode === "menu"){
+    fill(20, 60, 200, 100);
+    rect(0, gameHeight, width, height - gameHeight);
+
+    rectMode(CENTER);
+    rect(360, 660, 40, 40);
+    textSize(20);
+    text("New Station(200 money)", 300, 720);
+    fill("black");
+    rect(360, 660, 20, 20);
+    rectMode(CORNER);
+  }
 }
 
 class Sector {
@@ -57,7 +74,7 @@ class Sector {
 }
 
 class Station {
-  contructor(x, y){
+  constructor(x, y){
     this.x = x;
     this.y = y;
   }
@@ -83,5 +100,41 @@ function displayGrid(){
     for (let j = 0; j < sectors[i].length; j++){
       sectors[i][j].display();
     }
+  }
+}
+
+function keyPressed(){
+  if (key === 'm'){
+    if (screenMode === "normal"){
+      screenMode = "menu";
+    }
+    else if (screenMode === "menu"){
+      screenMode = "normal";
+    }
+  }
+}
+
+function mouseClicked(){
+  if (screenMode === "menu"){
+    if (mouseX < 400 && mouseX > 360){
+      if (mouseY < 700 && mouseY > 660){ 
+        mouseMode = "station";
+      }
+    }
+  }
+
+  if (mouseMode === "station"){
+    if (money - 200 >= 0){
+      newStation = new Station(mouseX, mouseY);
+      stations.push(newStation);
+      money -= 200;
+      displayStations();
+    }
+  }
+}
+
+function displayStations() {
+  for (let i = 0; i < stations.length; i++){
+    stations[i].display();
   }
 }
