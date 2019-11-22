@@ -35,7 +35,20 @@ function draw() {
     text("New Station(200 money)", 300, 720);
     fill("black");
     rect(360, 660, 20, 20);
+
+    rect(700, 660, 40, 40);
+    textSize(20);
+    text("New Line(50 money)", 640, 720);
     rectMode(CORNER);
+  }
+  sectorUpdate();
+}
+
+function sectorUpdate(){
+  for (let i = 0; i < sectors.length; i++){
+    for (let j = 0; j < sectors[i].length; j++){
+      sectors[i][j].update();
+    }
   }
 }
 
@@ -49,7 +62,8 @@ class Sector {
     this.name = names.pop();
     this.alpha = 0;
     this.stations = [];
-    this.satisfaction = this.stations.length * 10;
+    this.stationCount = 0;
+    this.satisfaction = this.stationCount * 10;
   }
   
   display() {
@@ -59,18 +73,24 @@ class Sector {
 
     if(mouseX < this.x + this.size && mouseX > this.x){
       if (mouseY < this.y + this.height && mouseY > this.y){
-        fill(255);
-        rect(mouseX, mouseY, 200, 100);
+        if (mouseMode === "normal"){
+          fill(255);
+          rect(mouseX, mouseY, 200, 100);
 
-        textSize(20);
-        fill(0);
-        text(this.name, mouseX + 75, mouseY + 20);
-        textSize(20);
-        text("Demand: " + Math.round(this.demand), mouseX + 10, mouseY + 50);
-        text("Satsifaction: " + this.satisfaction, mouseX + 10, mouseY + 70);
+          textSize(20);
+          fill(0);
+          text(this.name, mouseX + 75, mouseY + 20);
+          textSize(20);
+          text("Demand: " + Math.round(this.demand), mouseX + 10, mouseY + 50);
+          text("Satsifaction: " + this.satisfaction, mouseX + 10, mouseY + 70);
+        }
       }
     }
-  } 
+  }
+  
+  update(){
+    this.satisfaction = this.stationCount * 10;
+  }
 }
 
 class Station {
@@ -85,6 +105,20 @@ class Station {
   }
 }
 
+class Line {
+  constructor(station1, station2){
+    this.startX = station1.x;
+    this.starY = station1.y;
+
+    this.destX = station2.x;
+    this.destY = station2.y;
+  }
+  display(){
+    fill("red");
+    stroke(4);
+    line(this.startX, this.startY, this.destX, this.destY);
+  }
+}
 function makeGrid(){
   for (let x = 0; x < Math.round(gameWidth/cellWidth); x++){
     sectors.push([]);
@@ -110,31 +144,53 @@ function keyPressed(){
     }
     else if (screenMode === "menu"){
       screenMode = "normal";
+      mouseMode = "normal";
     }
   }
 }
 
 function mouseClicked(){
   if (screenMode === "menu"){
-    if (mouseX < 400 && mouseX > 360){
-      if (mouseY < 700 && mouseY > 660){ 
+    if (mouseX <= 380 && mouseX >= 340){
+      if (mouseY <= 680 && mouseY >= 640){ 
         mouseMode = "station";
       }
     }
+
+    if (mouseX <=)
   }
 
   if (mouseMode === "station"){
-    if (money - 200 >= 0){
-      newStation = new Station(mouseX, mouseY);
-      stations.push(newStation);
-      money -= 200;
-      displayStations();
+    if (mouseX > 0 && mouseX < gameWidth){
+      if (mouseY > 0 && mouseY < gameHeight){
+        if (money - 200 >= 0){
+          newStation = new Station(mouseX, mouseY);
+          stations.push(newStation);
+          money -= 200;
+          detectStations();
+        }
+      }
     }
   }
+  console.log(mouseX, mouseY);
 }
 
 function displayStations() {
   for (let i = 0; i < stations.length; i++){
     stations[i].display();
+  }
+}
+
+function detectStations(){
+  for (let i = 0; i < sectors.length; i++){
+    for (let j = 0; j < sectors[i].length; j++){
+      for (let c = 0; c < stations.length; c++){
+        if (stations[c].x > sectors[i][j].x && stations[c].x < sectors[i][j].x + sectors[i][j].size){
+          if (stations[c].y > sectors[i][j].y && stations[c] < sectors[i][j] + sectors[i][j].height){
+            sectors[i][j].stationCount += 1;
+          }
+        }
+      }
+    }
   }
 }
