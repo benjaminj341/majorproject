@@ -9,6 +9,7 @@ let mouseMode = "normal";
 let screenMode = "normal";
 let money = 1000;
 let stations = [];
+let lines = [];
 
 function preload(){
   city = loadImage('assets/city.jpg');
@@ -24,6 +25,7 @@ function draw() {
   image(city, 0, 0, gameWidth, gameHeight);  
   displayGrid();
   displayStations();
+  displayLines();
 
   if (screenMode === "menu"){
     fill(20, 60, 200, 100);
@@ -97,11 +99,13 @@ class Station {
   constructor(x, y){
     this.x = x;
     this.y = y;
+    this.length = 10;
+    this.height = 10;
   }
 
   display(){
     fill(0);
-    rect(this.x, this.y, 10, 10);
+    rect(this.x, this.y, this.length, this.height);
   }
 }
 
@@ -157,7 +161,11 @@ function mouseClicked(){
       }
     }
 
-    if (mouseX <=)
+    if (mouseX <= 720 && mouseX >= 680){
+      if (mouseY <= 380 && mouseY >= 340){
+        mouseMode = "line";
+      }
+    }
   }
 
   if (mouseMode === "station"){
@@ -172,7 +180,33 @@ function mouseClicked(){
       }
     }
   }
-  console.log(mouseX, mouseY);
+  //console.log(mouseX, mouseY);
+  else if (mouseMode === "line"){
+    let linepoints = [];
+    if (mouseX > 0 && mouseX < gameWidth){
+      if (mouseY > 0 && mouseY < gameHeight){
+        if (money - 50 >= 0){
+          if (linepoints.length === 2){
+            newLine = new Line(linepoints[0], linepoints[1]);
+            lines.push(newLine);
+          }
+          else {
+            for (let i = 0; i < stations.length; i++){
+              if (mouseX < stations[i].x + stations[i].length){
+                if (mouseX > stations[i].x){
+                  if (mouseY < stations[i].y + stations[i].length){
+                    if (mouseY > statons[i].y){
+                      linepoints.push(stations[1]);
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 function displayStations() {
@@ -192,5 +226,11 @@ function detectStations(){
         }
       }
     }
+  }
+}
+
+function displayLines(){
+  for (let i = 0; i < lines.length; i++){
+    lines[i].display();
   }
 }
