@@ -10,6 +10,7 @@ let screenMode = "normal";
 let money = 1000;
 let stations = [];
 let lines = [];
+let linepoints = [];
 
 function preload(){
   city = loadImage('assets/city.jpg');
@@ -112,15 +113,17 @@ class Station {
 class Line {
   constructor(station1, station2){
     this.startX = station1.x;
-    this.starY = station1.y;
+    this.startY = station1.y;
 
     this.destX = station2.x;
     this.destY = station2.y;
   }
   display(){
-    fill("red");
-    stroke(4);
+    stroke('red');
+    strokeWeight(4);
     line(this.startX, this.startY, this.destX, this.destY);
+    stroke('black');
+    strokeWeight(1);
   }
 }
 function makeGrid(){
@@ -162,7 +165,7 @@ function mouseClicked(){
     }
 
     if (mouseX <= 720 && mouseX >= 680){
-      if (mouseY <= 380 && mouseY >= 340){
+      if (mouseY <= 680 && mouseY >= 640){
         mouseMode = "line";
       }
     }
@@ -175,29 +178,32 @@ function mouseClicked(){
           newStation = new Station(mouseX, mouseY);
           stations.push(newStation);
           money -= 200;
-          detectStations();
+          //detectStations();
+          for (let i = 0; i < sectors.length; i++){
+            for (let j = 0; j < sectors[i].length; j++){              
+              if (newStation.x > sectors[i][j].x && newStation.x < sectors[i][j].x + sectors[i][j].size){
+                if (newSation.y > sectors[i][j].y && newStation < sectors[i][j] + sectors[i][j].height){
+                  sectors[i][j].stationCount += 1;
+                }
+              }             
+            }
+          }
         }
       }
     }
   }
   //console.log(mouseX, mouseY);
   else if (mouseMode === "line"){
-    let linepoints = [];
     if (mouseX > 0 && mouseX < gameWidth){
       if (mouseY > 0 && mouseY < gameHeight){
-        if (money - 50 >= 0){
-          if (linepoints.length === 2){
-            newLine = new Line(linepoints[0], linepoints[1]);
-            lines.push(newLine);
-          }
-          else {
+        if (money - 50 >= 0){          
             for (let i = 0; i < stations.length; i++){
               if (mouseX < stations[i].x + stations[i].length){
                 if (mouseX > stations[i].x){
                   if (mouseY < stations[i].y + stations[i].length){
-                    if (mouseY > statons[i].y){
-                      linepoints.push(stations[1]);
-                    }
+                    if (mouseY > stations[i].y){
+                      linepoints.push(stations[i]);
+                    } 
                   }
                 }
               }
@@ -207,7 +213,6 @@ function mouseClicked(){
       }
     }
   }
-}
 
 function displayStations() {
   for (let i = 0; i < stations.length; i++){
@@ -215,21 +220,27 @@ function displayStations() {
   }
 }
 
-function detectStations(){
-  for (let i = 0; i < sectors.length; i++){
-    for (let j = 0; j < sectors[i].length; j++){
-      for (let c = 0; c < stations.length; c++){
-        if (stations[c].x > sectors[i][j].x && stations[c].x < sectors[i][j].x + sectors[i][j].size){
-          if (stations[c].y > sectors[i][j].y && stations[c] < sectors[i][j] + sectors[i][j].height){
-            sectors[i][j].stationCount += 1;
-          }
-        }
-      }
-    }
-  }
-}
+//function detectStations(){
+//   for (let i = 0; i < sectors.length; i++){
+//     for (let j = 0; j < sectors[i].length; j++){
+//       for (let c = 0; c < stations.length; c++){
+//         if (stations[c].x > sectors[i][j].x && stations[c].x < sectors[i][j].x + sectors[i][j].size){
+//           if (stations[c].y > sectors[i][j].y && stations[c] < sectors[i][j] + sectors[i][j].height){
+//             sectors[i][j].stationCount += 1;
+//           }
+//         }
+//       }
+//     }
+//   }
+// }
 
 function displayLines(){
+  if (linepoints.length === 2){
+    newLine = new Line(linepoints[0], linepoints[1]);
+    lines.push(newLine);
+    linepoints = [];
+  }
+
   for (let i = 0; i < lines.length; i++){
     lines[i].display();
   }
