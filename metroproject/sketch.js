@@ -1,7 +1,7 @@
 let city;
 let gameWidth = 1500;
 let gameHeight = 600;
-let names = ["Barkingside", "Fleetwood", "Milton Park"];
+let names = ["Barkingside", "Fleetwood", "Milton Park",1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27];
 let sectors = [];
 let cellWidth = 150;
 let cellHeight = 200;
@@ -43,6 +43,10 @@ function draw() {
     textSize(20);
     text("New Line(50 money)", 640, 720);
     rectMode(CORNER);
+
+    textSize(40);
+    fill('black');
+    text("Money: " + money , 850, 710);
   }
   sectorUpdate();
 }
@@ -112,11 +116,11 @@ class Station {
 
 class Line {
   constructor(station1, station2){
-    this.startX = station1.x;
-    this.startY = station1.y;
+    this.startX = station1.x + station1.length/2;
+    this.startY = station1.y + station1.height/2;
 
-    this.destX = station2.x;
-    this.destY = station2.y;
+    this.destX = station2.x + station2.length/2;
+    this.destY = station2.y + station2.height/2;
   }
   display(){
     stroke('red');
@@ -178,12 +182,18 @@ function mouseClicked(){
           newStation = new Station(mouseX, mouseY);
           stations.push(newStation);
           money -= 200;
-          //detectStations();
+          
+          let aNewStation = stations.pop();
           for (let i = 0; i < sectors.length; i++){
-            for (let j = 0; j < sectors[i].length; j++){              
-              if (newStation.x > sectors[i][j].x && newStation.x < sectors[i][j].x + sectors[i][j].size){
-                if (newSation.y > sectors[i][j].y && newStation < sectors[i][j] + sectors[i][j].height){
+            console.log(1);
+            for (let j = 0; j < sectors[i].length; j++){   
+              console.log(2);
+              if (aNewStation.x > sectors[i][j].x && aNewStation.x < sectors[i][j].x + sectors[i][j].size){
+                console.log(3);
+                if (aNewStation.y > sectors[i][j].y && aNewStation.y < sectors[i][j].y + sectors[i][j].height){
                   sectors[i][j].stationCount += 1;
+                  append(stations, aNewStation);
+                  console.log(4);
                 }
               }             
             }
@@ -239,6 +249,7 @@ function displayLines(){
     newLine = new Line(linepoints[0], linepoints[1]);
     lines.push(newLine);
     linepoints = [];
+    money -= 50;
   }
 
   for (let i = 0; i < lines.length; i++){
