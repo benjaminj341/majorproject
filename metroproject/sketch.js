@@ -97,6 +97,21 @@ class Sector {
   
   update(){
     this.satisfaction = this.stationCount * 10;
+    accessUpdate();
+  }
+}
+
+function accessUpdate(){
+  for (let i = 0; i < lines.length; i++){
+    for (let j = 0; j < sectors.length; j++){
+      for (let c = 0; c < sectors[j].length; c++){
+        if (lines[i].startX < sectors[j][c].x + sectors[j][c].size && lines[i].startX > sectors[j][c].x){
+          if (lines[i].startY < secctors[j][c].y + sectors[j][c].height && lines[i].startY > sectors[j][c].y){
+            sectors[j][c] = lines[i]
+          }
+        }
+      }
+    }
   }
 }
 
@@ -121,6 +136,9 @@ class Line {
 
     this.destX = station2.x + station2.length/2;
     this.destY = station2.y + station2.height/2;
+
+    this.startSector;
+    this.destSector;
   }
   display(){
     stroke('red');
@@ -185,15 +203,15 @@ function mouseClicked(){
           
           let aNewStation = stations.pop();
           for (let i = 0; i < sectors.length; i++){
-            console.log(1);
+            
             for (let j = 0; j < sectors[i].length; j++){   
-              console.log(2);
+              
               if (aNewStation.x > sectors[i][j].x && aNewStation.x < sectors[i][j].x + sectors[i][j].size){
-                console.log(3);
+                
                 if (aNewStation.y > sectors[i][j].y && aNewStation.y < sectors[i][j].y + sectors[i][j].height){
                   sectors[i][j].stationCount += 1;
                   append(stations, aNewStation);
-                  console.log(4);
+                  
                 }
               }             
             }
@@ -202,7 +220,6 @@ function mouseClicked(){
       }
     }
   }
-  //console.log(mouseX, mouseY);
   else if (mouseMode === "line"){
     if (mouseX > 0 && mouseX < gameWidth){
       if (mouseY > 0 && mouseY < gameHeight){
@@ -230,19 +247,6 @@ function displayStations() {
   }
 }
 
-//function detectStations(){
-//   for (let i = 0; i < sectors.length; i++){
-//     for (let j = 0; j < sectors[i].length; j++){
-//       for (let c = 0; c < stations.length; c++){
-//         if (stations[c].x > sectors[i][j].x && stations[c].x < sectors[i][j].x + sectors[i][j].size){
-//           if (stations[c].y > sectors[i][j].y && stations[c] < sectors[i][j] + sectors[i][j].height){
-//             sectors[i][j].stationCount += 1;
-//           }
-//         }
-//       }
-//     }
-//   }
-// }
 
 function displayLines(){
   if (linepoints.length === 2){
