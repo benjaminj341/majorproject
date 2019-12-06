@@ -11,6 +11,7 @@ let money = 1000;
 let stations = [];
 let lines = [];
 let linepoints = [];
+let newLine = false;
 
 function preload(){
   city = loadImage('assets/city.jpg');
@@ -69,6 +70,7 @@ class Sector {
     this.name = names.pop();
     this.alpha = 0;
     this.stations = [];
+    this.lines = [];
     this.stationCount = 0;
     this.satisfaction = this.stationCount * 10;
   }
@@ -97,17 +99,15 @@ class Sector {
   
   update(){
     this.satisfaction = this.stationCount * 10;
-    accessUpdate();
-  }
-}
-
-function accessUpdate(){
-  for (let i = 0; i < lines.length; i++){
-    for (let j = 0; j < sectors.length; j++){
-      for (let c = 0; c < sectors[j].length; c++){
-        if (lines[i].startX < sectors[j][c].x + sectors[j][c].size && lines[i].startX > sectors[j][c].x){
-          if (lines[i].startY < secctors[j][c].y + sectors[j][c].height && lines[i].startY > sectors[j][c].y){
-            sectors[j][c] = lines[i]
+    
+    if (newLine === true){
+      for (let i = 0; i < lines.length; i++){
+        if (lines[i].startX < this.x + this.size && lines[i].startX > this.x){
+          if (lines[i].startY < this.y + this.height && lines[i].startY > this.y){
+            this.lines.push(lines[i]);     
+            this.satisfaction += 5;  
+            newLine = false;
+            console.log(1);
           }
         }
       }
@@ -253,6 +253,7 @@ function displayLines(){
     newLine = new Line(linepoints[0], linepoints[1]);
     lines.push(newLine);
     linepoints = [];
+    newLine = true;
     money -= 50;
   }
 
