@@ -15,6 +15,7 @@ let newLine = false;
 
 function preload(){
   city = loadImage('assets/city.jpg');
+  train = loadImage('assets/train.png');
 }
 
 function setup() {
@@ -48,6 +49,13 @@ function draw() {
     textSize(40);
     fill('black');
     text("Money: " + money , 850, 710);
+  }
+  else{
+    fill('green');
+    textSize(50);
+    textFont('Helvetica');
+    text("Metro Builder", 700, 660);
+    image(train, 150, 600, 500, 150);
   }
   sectorUpdate();
 }
@@ -99,15 +107,15 @@ class Sector {
   
   update(){
     this.satisfaction = this.stationCount * 10;
-    
     if (newLine === true){
       for (let i = 0; i < lines.length; i++){
         if (lines[i].startX < this.x + this.size && lines[i].startX > this.x){
+          console.log(1);
           if (lines[i].startY < this.y + this.height && lines[i].startY > this.y){
-            this.lines.push(lines[i]);     
-            this.satisfaction += 5;  
-            newLine = false;
-            console.log(1);
+            console.log(2);
+            //this.lines.push(lines[i]);
+            this.satisfaction += 5;
+            newLine = false;           
           }
         }
       }
