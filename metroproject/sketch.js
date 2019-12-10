@@ -106,19 +106,21 @@ class Sector {
   }
   
   update(){
-    this.satisfaction = this.stationCount * 10;
-    if (newLine === true){
-      for (let i = 0; i < lines.length; i++){
-        if (lines[i].startX < this.x + this.size && lines[i].startX > this.x){
-          console.log(1);
-          if (lines[i].startY < this.y + this.height && lines[i].startY > this.y){
-            console.log(2);
-            //this.lines.push(lines[i]);
-            this.satisfaction += 5;
-            newLine = false;           
-          }
+    this.satisfaction = this.stationCount * 10 + this.lines.length * 5;
+    
+    for (let i = 0; i < lines.length; i++){
+      if (lines[i].startX < this.x + this.size && lines[i].startX > this.x){
+        if (lines[i].startY < this.y + this.height && lines[i].startY > this.y){
+          this.lines.push(lines[i]);      
         }
       }
+      if (lines[i].destX < this.x + this.size && lines[i].destX > this.x){
+        if (lines[i].destY < this.y + this.height && lines[i].startY > this.y){
+          this.lines.push(lines[i]);
+        }
+      }
+       
+      
     }
   }
 }
