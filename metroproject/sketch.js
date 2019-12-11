@@ -109,21 +109,24 @@ class Sector {
     this.satisfaction = this.stationCount * 10 + this.lines.length * 5;
     
     for (let i = 0; i < lines.length; i++){
-      if (lines[i].startX < this.x + this.size && lines[i].startX > this.x){
-        if (lines[i].startY < this.y + this.height && lines[i].startY > this.y){
-          this.lines.push(lines[i]);      
+      if (newLine = true){
+        if (lines[i].startX < this.x + this.size && lines[i].startX > this.x){
+          if (lines[i].startY < this.y + this.height && lines[i].startY > this.y){
+            this.lines.push(lines[i]);      
+          }
         }
-      }
-      if (lines[i].destX < this.x + this.size && lines[i].destX > this.x){
-        if (lines[i].destY < this.y + this.height && lines[i].startY > this.y){
-          this.lines.push(lines[i]);
+        if (lines[i].destX < this.x + this.size && lines[i].destX > this.x){
+          if (lines[i].destY < this.y + this.height && lines[i].startY > this.y){
+            this.lines.push(lines[i]);
+          }
         }
+        newLine = false;
       }
-       
       
     }
   }
 }
+
 
 class Station {
   constructor(x, y){
@@ -262,8 +265,8 @@ function displayLines(){
   if (linepoints.length === 2){
     newLine = new Line(linepoints[0], linepoints[1]);
     lines.push(newLine);
+    //newLine();
     linepoints = [];
-    newLine = true;
     money -= 50;
   }
 
