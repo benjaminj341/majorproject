@@ -7,7 +7,7 @@ let cellWidth = 150;
 let cellHeight = 200;
 let mouseMode = "normal";
 let screenMode = "normal";
-let money = 1000;
+let money = Infinity;
 let stations = [];
 let lines = [];
 let linepoints = [];
@@ -66,6 +66,7 @@ function sectorUpdate(){
       sectors[i][j].update();
     }
   }
+  newLine = false;
 }
 
 class Sector {
@@ -79,6 +80,7 @@ class Sector {
     this.alpha = 0;
     this.stations = [];
     this.lines = [];
+    this.lines2 = [];
     this.stationCount = 0;
     this.satisfaction = this.stationCount * 10;
   }
@@ -107,22 +109,32 @@ class Sector {
   
   update(){
     this.satisfaction = this.stationCount * 10 + this.lines.length * 5;
-    
-    for (let i = 0; i < lines.length; i++){
-      if (newLine = true){
+    if (newLine === true){
+      console.log(this.name);
+      for (let i = 0; i < lines.length; i++){
         if (lines[i].startX < this.x + this.size && lines[i].startX > this.x){
-          if (lines[i].startY < this.y + this.height && lines[i].startY > this.y){
-            this.lines.push(lines[i]);      
+          if (lines[i].startY < this.y + this.height && lines[i].startY > this.y){            
+            this.lines2.push(lines[i]);
+            for (let j = 0; j < this.lines2.length; j++){
+              if (this.lines2[j] !== this.lines[j]){
+                this.lines.push(this.lines2[j]);
+              }
+              
+            }
+            console.log(1);      
           }
         }
         if (lines[i].destX < this.x + this.size && lines[i].destX > this.x){
-          if (lines[i].destY < this.y + this.height && lines[i].startY > this.y){
-            this.lines.push(lines[i]);
+          if (lines[i].destY < this.y + this.height && lines[i].destY > this.y){
+            this.lines2.push(lines[i]);
+            for (let j = 0; j < this.lines2.length; j++){
+              if (this.lines2[j] !== this.lines[j]){
+                this.lines.push(this.lines2[j]);
+              } 
+            }
           }
-        }
-        newLine = false;
+        }      
       }
-      
     }
   }
 }
@@ -265,7 +277,7 @@ function displayLines(){
   if (linepoints.length === 2){
     newLine = new Line(linepoints[0], linepoints[1]);
     lines.push(newLine);
-    //newLine();
+    newLine = true;
     linepoints = [];
     money -= 50;
   }
