@@ -80,7 +80,7 @@ class Sector {
     this.alpha = 0;
     this.stations = [];
     this.lines = [];
-    this.lines2 = [];
+    this.lineCount = 0;
     this.stationCount = 0;
     this.satisfaction = this.stationCount * 10;
   }
@@ -108,37 +108,24 @@ class Sector {
   }
   
   update(){
-    this.satisfaction = this.stationCount * 10 + this.lines.length * 5;
-    if (newLine === true){
-      console.log(this.name);
-      for (let i = 0; i < lines.length; i++){
-        if (lines[i].startX < this.x + this.size && lines[i].startX > this.x){
-          if (lines[i].startY < this.y + this.height && lines[i].startY > this.y){            
-            this.lines2.push(lines[i]);
-            for (let j = 0; j < this.lines2.length; j++){
-              if (this.lines2[j] !== this.lines[j]){
-                this.lines.push(this.lines2[j]);
-              }
-              
-            }
-            console.log(1);      
-          }
-        }
-        if (lines[i].destX < this.x + this.size && lines[i].destX > this.x){
-          if (lines[i].destY < this.y + this.height && lines[i].destY > this.y){
-            this.lines2.push(lines[i]);
-            for (let j = 0; j < this.lines2.length; j++){
-              if (this.lines2[j] !== this.lines[j]){
-                this.lines.push(this.lines2[j]);
-              } 
-            }
-          }
-        }      
-      }
-    }
+    this.satisfaction = this.stationCount * 10 + this.lineCount * 5;
+  //   if (newLine === true){
+  //     for (let i = 0; i < lines.length; i++){
+  //       if (lines[i].startX < this.x + this.size && lines[i].startX > this.x){
+  //         if (lines[i].startY < this.y + this.height && lines[i].startY > this.y){            
+            
+  //         }
+  //       }
+  //       if (lines[i].destX < this.x + this.size && lines[i].destX > this.x){
+  //         if (lines[i].destY < this.y + this.height && lines[i].destY > this.y){
+  //           this.lineCount++;
+  //         }
+  //       }             
+  //     }
+  //   }
+  // }
   }
 }
-
 
 class Station {
   constructor(x, y){
@@ -275,11 +262,28 @@ function displayStations() {
 
 function displayLines(){
   if (linepoints.length === 2){
-    newLine = new Line(linepoints[0], linepoints[1]);
-    lines.push(newLine);
+    anewLine = new Line(linepoints[0], linepoints[1]);
+    lines.push(anewLine);
     newLine = true;
     linepoints = [];
     money -= 50;
+
+    for (let c = 0; c < sectors.length; c++){
+      for (let j = 0; j < sectors[c].length; j++){
+        if (anewLine.startX < sectors[c][j].x + sectors[c][j].size && anewLine.startX > sectors[c][j].x){
+          console.log(1);
+          if (anewLine.startY < sectors[c][j].y + sectors[c][j].height && anewLine.startY > sectors[c][j].y){   
+            console.log(2);         
+            sectors[c][j].lineCount++;
+          }
+        }
+        if (anewLine.destX < sectors[c][j].x + sectors[c][j].size && anewLine.destX > sectors[c][j].x){
+          if (anewLine.destY < sectors[c][j].y + sectors[c][j].height && anewLine.destY > sectors[c][j].y){
+            sectors[c][j].lineCount++;
+          }
+        }                     
+      }
+    }
   }
 
   for (let i = 0; i < lines.length; i++){
