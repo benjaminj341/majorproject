@@ -1,17 +1,19 @@
 let city;
 let gameWidth = 1500;
 let gameHeight = 600;
-let names = ["Barkingside", "Fleetwood", "Milton Park",1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27];
+let names = ["Barkingside", "Fleetwood", "Milton Park","The Gulch", "Morego", "North East", "Smithford", "Moffat City", "Airport", "South Pinskill", 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27];
 let sectors = [];
 let cellWidth = 150;
 let cellHeight = 200;
 let mouseMode = "normal";
 let screenMode = "normal";
-let money = Infinity;
+let money = 500;
 let stations = [];
 let lines = [];
 let linepoints = [];
 let newLine = false;
+let t;
+let sectorChange = [-1, 0, 1, 2, 3];
 
 function preload(){
   city = loadImage('assets/city.jpg');
@@ -21,6 +23,7 @@ function preload(){
 function setup() {
   createCanvas(windowWidth, windowHeight);
   makeGrid();
+  t = millis();
 }
 
 function draw() {
@@ -61,12 +64,15 @@ function draw() {
 }
 
 function sectorUpdate(){
-  for (let i = 0; i < sectors.length; i++){
-    for (let j = 0; j < sectors[i].length; j++){
-      sectors[i][j].update();
+  if (millis() - t >= 30000){
+    for (let i = 0; i < sectors.length; i++){
+      for (let j = 0; j < sectors[i].length; j++){
+        sectors[i][j].update();
+      }
     }
+    t = millis();
+    console.log(1);
   }
-  newLine = false;
 }
 
 class Sector {
@@ -83,6 +89,7 @@ class Sector {
     this.lineCount = 0;
     this.stationCount = 0;
     this.satisfaction = this.stationCount * 10;
+    this.profit;
   }
   
   display() {
@@ -106,25 +113,26 @@ class Sector {
       }
     }
   }
-  
   update(){
     this.satisfaction = this.stationCount * 10 + this.lineCount * 5;
-  //   if (newLine === true){
-  //     for (let i = 0; i < lines.length; i++){
-  //       if (lines[i].startX < this.x + this.size && lines[i].startX > this.x){
-  //         if (lines[i].startY < this.y + this.height && lines[i].startY > this.y){            
-            
-  //         }
-  //       }
-  //       if (lines[i].destX < this.x + this.size && lines[i].destX > this.x){
-  //         if (lines[i].destY < this.y + this.height && lines[i].destY > this.y){
-  //           this.lineCount++;
-  //         }
-  //       }             
-  //     }
-  //   }
-  // }
+    this.demand += random(sectorChange);
+
+    if (this.demand - this.satisfaction >= 20){
+      this.profit = 1;
+    }
+    else if (this.demand - this.satisfaction < 20 && this.demand - this.satisfaction >= 10){
+      this.profit = 2;
+    }
+    else if (this.demand - this.satisfaction < 10 && this.demand - this.satisfaction >= 0){
+      this.profit = 3;
+    }
+    else {
+      this.profit = this.demand;
+    }
+
+    money += Math.round(this.profit);
   }
+
 }
 
 class Station {
