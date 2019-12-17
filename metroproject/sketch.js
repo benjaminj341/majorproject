@@ -1,7 +1,7 @@
 let city;
 let gameWidth = 1500;
 let gameHeight = 600;
-let names = ["Barkingside", "Fleetwood", "Milton Park","The Gulch", "Morego", "North East", "Smithford", "Moffat City", "Airport", "South Pinskill", 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27];
+let names = ["Barkingside", "Fleetwood", "Milton Park","The Gulch", "Morego", "North East", "Smithford", "Moffat City", "Airport", "South Pinskill", "Pinskill Loop", "Engelstown", "Ballantyne", "Old Market", "Calles leones", "Manning District", "Central City", "Avonhurst", "Arnhem Plaza", "West Downtown", "Entertainment District", "Pontosa Street", "Stadium", "East Industrial", "Denham River", "Hogsmeade", "East Industrial", "Tigpan Park", "Melrose Hills", "Metrocity"];
 let sectors = [];
 let cellWidth = 150;
 let cellHeight = 200;
@@ -14,6 +14,7 @@ let linepoints = [];
 let newLine = false;
 let t;
 let sectorChange = [-1, 0, 1, 2, 3];
+let totalSatisfaction = 0;
 
 function preload(){
   city = loadImage('assets/city.jpg');
@@ -52,6 +53,8 @@ function draw() {
     textSize(40);
     fill('black');
     text("Money: " + money , 850, 710);
+
+    text("Satisfaction: " + Math.round(totalSatisfaction), 1200, 710);
   }
   else{
     fill('green');
@@ -65,13 +68,19 @@ function draw() {
 
 function sectorUpdate(){
   if (millis() - t >= 30000){
+    let satArray = [];
     for (let i = 0; i < sectors.length; i++){
       for (let j = 0; j < sectors[i].length; j++){
         sectors[i][j].update();
+        satArray.push(sectors[i][j].totalSat);
       }
     }
+    for (let i = 0; i < satArray.length; i++){
+      totalSatisfaction += satArray[i];
+    }
+    totalSatisfaction = totalSatisfaction/(satArray.length/2);
+
     t = millis();
-    console.log(1);
   }
 }
 
@@ -90,6 +99,7 @@ class Sector {
     this.stationCount = 0;
     this.satisfaction = this.stationCount * 10;
     this.profit;
+    this.totalSat = 0;
   }
   
   display() {
@@ -105,7 +115,7 @@ class Sector {
 
           textSize(20);
           fill(0);
-          text(this.name, mouseX + 75, mouseY + 20);
+          text(this.name, mouseX + 10, mouseY + 20);
           textSize(20);
           text("Demand: " + Math.round(this.demand), mouseX + 10, mouseY + 50);
           text("Satsifaction: " + this.satisfaction, mouseX + 10, mouseY + 70);
@@ -128,6 +138,11 @@ class Sector {
     }
     else {
       this.profit = this.demand;
+    }
+
+    this.totalSat = this.satisfaction - this.demand;
+    if (this.totalSat < 0){
+      this.totalSat = 0;
     }
 
     money += Math.round(this.profit);
