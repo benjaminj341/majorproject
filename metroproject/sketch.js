@@ -1,7 +1,7 @@
 let city;
 let gameWidth = 1500;
 let gameHeight = 600;
-let names = ["Barkingside", "Fleetwood", "Milton Park","The Gulch", "Morego", "North East", "Smithford", "Moffat City", "Airport", "South Pinskill", "Pinskill Loop", "Engelstown", "Ballantyne", "Old Market", "Calles leones", "Manning District", "Central City", "Avonhurst", "Arnhem Plaza", "West Downtown", "Entertainment District", "Pontosa Street", "Stadium", "East Industrial", "Denham River", "Hogsmeade", "East Industrial", "Tigpan Park", "Melrose Hills", "Metrocity"];
+let names = ["Barkingside", "Fleetwood", "Milton Park","The Gulch", "Morego", "North East", "Smithford", "Moffat City", "Airport", "South Pinskill", "Pinskill Loop", "Engelstown", "Ballantyne", "Old Market", "Calles leones", "Manning District", "Central City", "Avonhurst", "Arnhem Plaza", "West Downtown", "Entertainment District", "Pontosa Street", "Stadium", "East Industrial", "Denham River", "Hogsmeade", "West Industrial", "Tigpan Park", "Melrose Hills", "Metrocity"];
 let sectors = [];
 let cellWidth = 150;
 let cellHeight = 200;
@@ -67,7 +67,7 @@ function draw() {
 }
 
 function sectorUpdate(){
-  if (millis() - t >= 30000){
+  if (millis() - t >= 20000){
     let satArray = [];
     for (let i = 0; i < sectors.length; i++){
       for (let j = 0; j < sectors[i].length; j++){
@@ -79,7 +79,6 @@ function sectorUpdate(){
       totalSatisfaction += satArray[i];
     }
     totalSatisfaction = totalSatisfaction/(satArray.length/2);
-
     t = millis();
   }
 }
@@ -128,13 +127,64 @@ class Sector {
     this.demand += random(sectorChange);
 
     if (this.demand - this.satisfaction >= 20){
-      this.profit = 1;
+      if (this. demand < 10){
+        this.profit = 0;
+      }
+      else if (this.demand < 30 && this.demand >= 10){
+        this.profit = 1;
+      }
+      else if (this.demand < 50 && this.demand >= 30){
+        this.profit = 2;
+      }
+      else if (this.demand < 70 && this.demand >= 50){
+        this.profit = 3;
+      }
+      else if (this.demand < 90 && this.demand >= 70){
+        this.profit = 4;
+      }
+      else {
+        this.profit = 5;
+      }
     }
     else if (this.demand - this.satisfaction < 20 && this.demand - this.satisfaction >= 10){
-      this.profit = 2;
+      if (this. demand < 10){
+        this.profit = 0;
+      }
+      else if (this.demand < 30 && this.demand >= 10){
+        this.profit = 1;
+      }
+      else if (this.demand < 50 && this.demand >= 30){
+        this.profit = 2;
+      }
+      else if (this.demand < 70 && this.demand >= 50){
+        this.profit = 3;
+      }
+      else if (this.demand < 90 && this.demand >= 70){
+        this.profit = 4;
+      }
+      else {
+        this.profit = 5;
+      }
     }
     else if (this.demand - this.satisfaction < 10 && this.demand - this.satisfaction >= 0){
-      this.profit = 3;
+      if (this. demand < 10){
+        this.profit = 0;
+      }
+      else if (this.demand < 30 && this.demand >= 10){
+        this.profit = 2;
+      }
+      else if (this.demand < 50 && this.demand >= 30){
+        this.profit = 3;
+      }
+      else if (this.demand < 70 && this.demand >= 50){
+        this.profit = 4;
+      }
+      else if (this.demand < 90 && this.demand >= 70){
+        this.profit = 5;
+      }
+      else {
+        this.profit = 6;
+      }
     }
     else {
       this.profit = this.demand;
@@ -170,11 +220,9 @@ class Line {
     this.startY = station1.y + station1.height/2;
 
     this.destX = station2.x + station2.length/2;
-    this.destY = station2.y + station2.height/2;
-
-    this.startSector;
-    this.destSector;
+    this.destY = station2.y + station2.height/2; 
   }
+
   display(){
     stroke('red');
     strokeWeight(4);
