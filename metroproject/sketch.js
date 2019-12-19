@@ -14,6 +14,7 @@ let linepoints = [];
 let newLine = false;
 let t;
 let sectorChange = [-1, 0, 1, 2, 3];
+let lineColours = ["red", "blue", "pink", "green", "yellow", "orange", "purple"];
 let totalSatisfaction = 0;
 
 function preload(){
@@ -220,11 +221,13 @@ class Line {
     this.startY = station1.y + station1.height/2;
 
     this.destX = station2.x + station2.length/2;
-    this.destY = station2.y + station2.height/2; 
+    this.destY = station2.y + station2.height/2;
+
+    this.colour = random(lineColours);
   }
 
   display(){
-    stroke('red');
+    stroke(this.colour);
     strokeWeight(4);
     line(this.startX, this.startY, this.destX, this.destY);
     stroke('black');
@@ -333,26 +336,28 @@ function displayStations() {
 
 function displayLines(){
   if (linepoints.length === 2){
-    anewLine = new Line(linepoints[0], linepoints[1]);
-    lines.push(anewLine);
-    newLine = true;
-    linepoints = [];
-    money -= 50;
+    if (linepoints[0].x !== linepoints[1].x && linepoints[0].y !== linepoints[1].y){
+      anewLine = new Line(linepoints[0], linepoints[1]);
+      lines.push(anewLine);
+      newLine = true;
+      linepoints = [];
+      money -= 50;
 
-    for (let c = 0; c < sectors.length; c++){
-      for (let j = 0; j < sectors[c].length; j++){
-        if (anewLine.startX < sectors[c][j].x + sectors[c][j].size && anewLine.startX > sectors[c][j].x){
-          console.log(1);
-          if (anewLine.startY < sectors[c][j].y + sectors[c][j].height && anewLine.startY > sectors[c][j].y){   
-            console.log(2);         
-            sectors[c][j].lineCount++;
+      for (let c = 0; c < sectors.length; c++){
+        for (let j = 0; j < sectors[c].length; j++){
+          if (anewLine.startX < sectors[c][j].x + sectors[c][j].size && anewLine.startX > sectors[c][j].x){
+            console.log(1);
+            if (anewLine.startY < sectors[c][j].y + sectors[c][j].height && anewLine.startY > sectors[c][j].y){   
+              console.log(2);         
+              sectors[c][j].lineCount++;
+            }
           }
+          if (anewLine.destX < sectors[c][j].x + sectors[c][j].size && anewLine.destX > sectors[c][j].x){
+            if (anewLine.destY < sectors[c][j].y + sectors[c][j].height && anewLine.destY > sectors[c][j].y){
+              sectors[c][j].lineCount++;
+            }
+          }                     
         }
-        if (anewLine.destX < sectors[c][j].x + sectors[c][j].size && anewLine.destX > sectors[c][j].x){
-          if (anewLine.destY < sectors[c][j].y + sectors[c][j].height && anewLine.destY > sectors[c][j].y){
-            sectors[c][j].lineCount++;
-          }
-        }                     
       }
     }
   }
