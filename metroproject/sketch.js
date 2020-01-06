@@ -13,6 +13,7 @@ let lines = [];
 let linepoints = [];
 let newLine = false;
 let t;
+let t2;
 let sectorChange = [-1, 0, 1, 2, 3];
 let lineColours = ["red", "blue", "pink", "green", "yellow", "orange", "purple"];
 let totalSatisfaction = 0;
@@ -26,6 +27,7 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   makeGrid();
   t = millis();
+  t2 = millis();
 }
 
 function draw() {
@@ -65,7 +67,22 @@ function draw() {
     image(train, 150, 600, 500, 150);
   }
   sectorUpdate();
+  lineUpdate();
 }
+
+function lineUpdate(){
+  if (millis() - t2 >= 10000){
+    console.log("godo");
+    for (let i = 0; i < lines.length; i++){
+      lines[i].update();
+      if (lines[i].health <= 0){
+        lines.splice(lines[i]);
+      } 
+    }
+    t2 = millis();
+  }
+}
+
 
 function sectorUpdate(){
   if (millis() - t >= 20000){
@@ -223,7 +240,8 @@ class Line {
     this.destX = station2.x + station2.length/2;
     this.destY = station2.y + station2.height/2;
 
-    this.colour = random(lineColours);
+    this.health = 100;
+    this.colour = "green";
   }
 
   display(){
@@ -232,6 +250,19 @@ class Line {
     line(this.startX, this.startY, this.destX, this.destY);
     stroke('black');
     strokeWeight(1);
+  }
+
+  update(){
+    this.health -= 1;
+    if (this.health > 60 && this.health <= 100){
+      this.colour = "green";
+    }
+    else if (this.health > 40 && this.health <= 60){
+      this.colour = "yellow";
+    }
+    else {
+      this.colour = "red";
+    }
   }
 }
 function makeGrid(){
