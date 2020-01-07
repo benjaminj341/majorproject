@@ -17,57 +17,92 @@ let t2;
 let sectorChange = [-1, 0, 1, 2, 3];
 let lineColours = ["red", "blue", "pink", "green", "yellow", "orange", "purple"];
 let totalSatisfaction = 0;
+let mode;
+let backR = 0;
+let backRchange = 1;
+let backG = 100;
+let backGchange = 1;
+let backB = 255;
+let backBchange = -1;
 
 function preload(){
   city = loadImage('assets/city.jpg');
   train = loadImage('assets/train.png');
+  Myfont = loadFont('assets/font.ttf');
 }
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   makeGrid();
-  t = millis();
-  t2 = millis();
+  mode = 'start';
+  //t = millis();
+  //t2 = millis();
 }
 
 function draw() {
-  background(225);
-  image(city, 0, 0, gameWidth, gameHeight);  
-  displayGrid();
-  displayStations();
-  displayLines();
+  if (mode === 'play'){
+    background(255);
+    image(city, 0, 0, gameWidth, gameHeight);  
+    displayGrid();
+    displayStations();
+    displayLines();
 
-  if (screenMode === "menu"){
-    fill(20, 60, 200, 100);
-    rect(0, gameHeight, width, height - gameHeight);
+    if (screenMode === "menu"){
+      fill(20, 60, 200, 100);
+      rect(0, gameHeight, width, height - gameHeight);
 
-    rectMode(CENTER);
-    rect(360, 660, 40, 40);
-    textSize(20);
-    text("New Station(200 money)", 300, 720);
-    fill("black");
-    rect(360, 660, 20, 20);
+      rectMode(CENTER);
+      rect(360, 660, 40, 40);
+      textSize(20);
+      text("New Station(200 money)", 300, 720);
+      fill("black");
+      rect(360, 660, 20, 20);
 
-    rect(700, 660, 40, 40);
-    textSize(20);
-    text("New Line(50 money)", 640, 720);
-    rectMode(CORNER);
+      rect(700, 660, 40, 40);
+      textSize(20);
+      text("New Line(50 money)", 640, 720);
+      rectMode(CORNER);
 
-    textSize(40);
-    fill('black');
-    text("Money: " + money , 850, 710);
+      textSize(40);
+      fill('black');
+      text("Money: " + money , 850, 710);
 
-    text("Satisfaction: " + Math.round(totalSatisfaction), 1200, 710);
+      text("Satisfaction: " + Math.round(totalSatisfaction), 1200, 710);
+    }
+    else{
+      fill('green');
+      textSize(50);
+      textFont(Myfont);
+      text("Metro Builder", 700, 660);
+      textSize(20);
+      text("Press M for menu", 1100, 660);
+      image(train, 150, 600, 500, 150);
+    }
+    sectorUpdate();
+    lineUpdate();
   }
-  else{
-    fill('green');
-    textSize(50);
-    textFont('Helvetica');
-    text("Metro Builder", 700, 660);
-    image(train, 150, 600, 500, 150);
+
+  else if (mode === 'start'){
+    background(backR, backG, backB);
+    backR += backRchange;
+    backG += backGchange;
+    backB += backBchange;
+
+    if (backR <= 0 || backR >= 255){
+      backRchange = backRchange * -1;
+    }
+    if (backG <= 0 || backG >= 255){
+      backGchange = backGchange * -1;
+    }
+    if (backB <= 0 || backB >= 255){
+      backBchange = backBchange * -1;
+    }
+
+    textSize(150);
+    textFont(Myfont);
+    text("Metro Builder", width/2 - 400, height/2 - 200);
+
   }
-  sectorUpdate();
-  lineUpdate();
 }
 
 function lineUpdate(){
@@ -76,8 +111,27 @@ function lineUpdate(){
     for (let i = 0; i < lines.length; i++){
       lines[i].update();
       if (lines[i].health <= 0){
+        for (let c = 0; c < sectors.length; c++){
+          for (let j = 0; j < sectors[c].length; j++){
+            if (lines[i].startX < sectors[c][j].x + sectors[c][j].size && lines[i].startX > sectors[c][j].x){
+              if (lines[i].startY < sectors[c][j].y + sectors[c][j].height && lines[i].startY > sectors[c][j].y){            
+                sectors[c][j].lineCount--;
+              }
+            }
+          } 
+        }
+
+        for (let c = 0; c < sectors.length; c++){
+          for (let j = 0; j < sectors[c].length; j++){
+            if (lines[i].destX < sectors[c][j].x + sectors[c][j].size && lines[i].destX > sectors[c][j].x){
+              if (lines[i].destY < sectors[c][j].y + sectors[c][j].height && lines[i].destY > sectors[c][j].y){            
+                sectors[c][j].lineCount--;
+              }
+            }
+          } 
+        }
         lines.splice(lines[i]);
-      } 
+      }
     }
     t2 = millis();
   }
@@ -265,6 +319,7 @@ class Line {
     }
   }
 }
+
 function makeGrid(){
   for (let x = 0; x < Math.round(gameWidth/cellWidth); x++){
     sectors.push([]);
@@ -357,6 +412,7 @@ function mouseClicked(){
       }
     }
   }
+
 
 function displayStations() {
   for (let i = 0; i < stations.length; i++){
