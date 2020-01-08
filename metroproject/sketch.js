@@ -72,7 +72,7 @@ function draw() {
     else{
       fill('green');
       textSize(50);
-      textFont(Myfont);
+      textFont('Helvetica');
       text("Metro Builder", 700, 660);
       textSize(20);
       text("Press M for menu", 1100, 660);
@@ -98,10 +98,22 @@ function draw() {
       backBchange = backBchange * -1;
     }
 
+    fill("red");
     textSize(150);
     textFont(Myfont);
     text("Metro Builder", width/2 - 400, height/2 - 200);
 
+    fill('grey');
+    rect(width/2 - 150, height/2 - 100, 300, 100);
+    fill("black");
+    textFont("Arial");
+    textSize(80);
+    text("Play", width/2 - 100, height/2 - 25);
+
+    fill('grey');
+    rect(width/2 - 150, height/2 + 100, 300, 100);
+    fill('black');
+    text("Rules", width/2 - 100, height/2 + 175);
   }
 }
 
@@ -364,6 +376,17 @@ function mouseClicked(){
       }
     }
   }
+  //width/2 - 150, height/2 - 100, 300, 100
+  if (mode === "start"){
+    if (mouseX >= width/2 - 150 && mouseX <= width/2 - 150 + 300){
+      if (mouseY <= height/2 && mouseY >= height/2 - 100){
+        mode = 'play';
+        t = millis();
+        t2 = millis();
+      }
+    }
+  }
+
 
   if (mouseMode === "station"){
     if (mouseX > 0 && mouseX < gameWidth){
@@ -422,7 +445,7 @@ function displayStations() {
 
 
 function displayLines(){
-  if (linepoints.length === 2){
+  if (linepoints.length >= 2){
     if (linepoints[0].x !== linepoints[1].x && linepoints[0].y !== linepoints[1].y){
       anewLine = new Line(linepoints[0], linepoints[1]);
       lines.push(anewLine);
