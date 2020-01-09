@@ -35,8 +35,6 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   makeGrid();
   mode = 'start';
-  //t = millis();
-  //t2 = millis();
 }
 
 function draw() {
@@ -114,6 +112,14 @@ function draw() {
     rect(width/2 - 150, height/2 + 100, 300, 100);
     fill('black');
     text("Rules", width/2 - 100, height/2 + 175);
+  }
+
+  else if (mode === 'rules'){
+    background('red');
+
+    textSize(20);
+    fill('black')
+    text("The goal of this game is to build your railway in the most efficeint way possible, to generate the most satisfaction. Bring up the menu to place stations and lines between them." , 0, 200);
   }
 }
 
@@ -363,6 +369,7 @@ function keyPressed(){
 }
 
 function mouseClicked(){
+  console.log(mouseX, mouseY);
   if (screenMode === "menu"){
     if (mouseX <= 380 && mouseX >= 340){
       if (mouseY <= 680 && mouseY >= 640){ 
@@ -376,13 +383,20 @@ function mouseClicked(){
       }
     }
   }
-  //width/2 - 150, height/2 - 100, 300, 100
+  //width/2 - 150, height/2 + 100, 300, 100
   if (mode === "start"){
     if (mouseX >= width/2 - 150 && mouseX <= width/2 - 150 + 300){
       if (mouseY <= height/2 && mouseY >= height/2 - 100){
         mode = 'play';
         t = millis();
         t2 = millis();
+      }
+    }
+
+    if (mouseX >= width/2 - 150 && mouseX <= width/2 - 150 + 300){
+      console.log('a')
+      if (mouseY <= height/2 + 200 && mouseY >= height/2 + 100){
+        mode = 'rules';
       }
     }
   }
