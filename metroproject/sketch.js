@@ -28,7 +28,9 @@ let backBchange = -1;
 function preload(){
   city = loadImage('assets/city.jpg');
   train = loadImage('assets/train.png');
+  rail = loadImage('assets/rail.jpg');
   Myfont = loadFont('assets/font.ttf');
+  traingif1 = createImg('assets/train1.gif');
 }
 
 function setup() {
@@ -57,6 +59,7 @@ function draw() {
       rect(360, 660, 20, 20);
 
       rect(700, 660, 40, 40);
+      image(rail, 680, 640, 40, 40);
       textSize(20);
       text("New Line(50 money)", 640, 720);
       rectMode(CORNER);
@@ -71,7 +74,7 @@ function draw() {
       fill('green');
       textSize(50);
       textFont('Helvetica');
-      text("Metro Builder", 700, 660);
+      text("Railway Builder", 700, 660);
       textSize(20);
       text("Press M for menu", 1100, 660);
       image(train, 150, 600, 500, 150);
@@ -99,7 +102,7 @@ function draw() {
     fill("red");
     textSize(150);
     textFont(Myfont);
-    text("Metro Builder", width/2 - 400, height/2 - 200);
+    text("Railway Builder", width/2 - 400, height/2 - 200);
 
     fill('grey');
     rect(width/2 - 150, height/2 - 100, 300, 100);
@@ -112,6 +115,8 @@ function draw() {
     rect(width/2 - 150, height/2 + 100, 300, 100);
     fill('black');
     text("Rules", width/2 - 100, height/2 + 175);
+
+    traingif1.position(200, 200);
   }
 
   else if (mode === 'rules'){
@@ -120,6 +125,21 @@ function draw() {
     textSize(20);
     fill('black')
     text("The goal of this game is to build your railway in the most efficeint way possible, to generate the most satisfaction. Bring up the menu to place stations and lines between them." , 0, 200);
+    text("Click the station icon and then click in a spot where you want to place one to build it. To place a line, click the icon and then click the 2 stations that you would like to build it between", 0, 250);
+    text("Keep in mind the different areas have different levels of demand, and your level of income depends on how many people(and areas) are satisfied.", 0, 300);
+    text("Lines deteriorate over time, and you will notice them getting yellow and eventually red. Eventually they will cease to operate", 0, 350);
+    text("To repair a line, click the two stations it connects as you would when placing down the line the first time", 0, 400);
+    text("Pay attention to the general satisfaction statistic beside the money in the menu. If it continues to increase this means you are probably doing a good job", 0, 450);
+
+    fill('grey');
+    rect(600, 550, 300, 100);
+    textSize(50);
+    fill("black");
+    text("Begin!", 675, 615);
+  }
+
+  if (mode !== "start"){
+    removeElements();
   }
 }
 
@@ -218,22 +238,22 @@ class Sector {
 
     if (this.demand - this.satisfaction >= 20){
       if (this. demand < 10){
-        this.profit = 0;
-      }
-      else if (this.demand < 30 && this.demand >= 10){
         this.profit = 1;
       }
+      else if (this.demand < 30 && this.demand >= 10){
+        this.profit = 0;
+      }
       else if (this.demand < 50 && this.demand >= 30){
-        this.profit = 2;
+        this.profit = 0;
       }
       else if (this.demand < 70 && this.demand >= 50){
-        this.profit = 3;
+        this.profit = 0;
       }
       else if (this.demand < 90 && this.demand >= 70){
-        this.profit = 4;
+        this.profit = 0;
       }
       else {
-        this.profit = 5;
+        this.profit = 0;
       }
     }
     else if (this.demand - this.satisfaction < 20 && this.demand - this.satisfaction >= 10){
@@ -383,7 +403,7 @@ function mouseClicked(){
       }
     }
   }
-  //width/2 - 150, height/2 + 100, 300, 100
+  
   if (mode === "start"){
     if (mouseX >= width/2 - 150 && mouseX <= width/2 - 150 + 300){
       if (mouseY <= height/2 && mouseY >= height/2 - 100){
@@ -401,6 +421,13 @@ function mouseClicked(){
     }
   }
 
+  else if (mode === "rules"){
+    if (mouseX >= 600 && mouseX <= 900){
+      if (mouseY >= 550 && mouseY <= 650){
+        mode = 'play';
+      }
+    }
+  }
 
   if (mouseMode === "station"){
     if (mouseX > 0 && mouseX < gameWidth){
