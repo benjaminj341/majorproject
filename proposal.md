@@ -7,7 +7,8 @@ Metro builder game. It will be a map of a city, divided up into sections, each w
   - pop up menu with options to place new stations, extend lines
   - stats bar at the top showing the amount of money, overall satisfaction
   - regionalized stats pages that pop up when the mouse is hovering on the desired quadrant, showing satisfaction, demand
-  - same thing for stations, except displaying the name of the stations only
+  - ~~same thing for stations, except displaying the name of the stations only~~
+  *realized I couldn't do this realistically. The amount of stations that you need tyo place is too high to bother putting names for them. This also interferes with the stats pages of the sectors*
 
 ## Nice to have list
   - animations(sqaure moving back and forth on built lines)
