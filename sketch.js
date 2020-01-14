@@ -14,8 +14,11 @@ let linepoints = [];
 let newLine = false;
 let t;
 let t2;
-let sectorChange = [-1, 0, 1, 2, 3];
-let lineColours = ["red", "blue", "pink", "green", "yellow", "orange", "purple"];
+let t3;
+let t4;
+let t5;
+let t6;
+let sectorChange = [-1, 0, 1, 2];
 let totalSatisfaction = 0;
 let mode;
 let backR = 0;
@@ -24,6 +27,9 @@ let backG = 100;
 let backGchange = 1;
 let backB = 255;
 let backBchange = -1;
+let bronzeBadge = false;
+let silverBadge = false;
+let goldBadge = false;
 
 function preload(){
   city = loadImage('assets/city.jpg');
@@ -31,6 +37,7 @@ function preload(){
   rail = loadImage('assets/rail.jpg');
   Myfont = loadFont('assets/font.ttf');
   traingif1 = createImg('assets/train1.gif');
+  traingif2 = createImg('assets/train2.gif');
 }
 
 function setup() {
@@ -70,6 +77,15 @@ function draw() {
 
       text("Satisfaction: " + Math.round(totalSatisfaction), 1200, 710);
     }
+    else if (screenMode === 'badges'){
+      fill(20, 60, 200, 100);
+      rect(0, gameHeight, width, height - gameHeight);
+
+      if (bronzeBadge === true){
+        circle()
+      }
+    }
+
     else{
       fill('green');
       textSize(50);
@@ -117,6 +133,7 @@ function draw() {
     text("Rules", width/2 - 100, height/2 + 175);
 
     traingif1.position(200, 200);
+    traingif2.position(1000, 200);
   }
 
   else if (mode === 'rules'){
@@ -140,6 +157,11 @@ function draw() {
 
   if (mode !== "start"){
     removeElements();
+  }
+
+  if (totalSatisfaction >= 5 && bronzeBadge === false){
+    t3 = millis();
+    bronzebadge = true;
   }
 }
 
@@ -241,16 +263,16 @@ class Sector {
         this.profit = 1;
       }
       else if (this.demand < 30 && this.demand >= 10){
-        this.profit = 0;
+        this.profit = 1;
       }
       else if (this.demand < 50 && this.demand >= 30){
-        this.profit = 0;
+        this.profit = 1;
       }
       else if (this.demand < 70 && this.demand >= 50){
-        this.profit = 0;
+        this.profit = 1;
       }
       else if (this.demand < 90 && this.demand >= 70){
-        this.profit = 0;
+        this.profit = 1;
       }
       else {
         this.profit = 0;
@@ -384,6 +406,16 @@ function keyPressed(){
     else if (screenMode === "menu"){
       screenMode = "normal";
       mouseMode = "normal";
+    }
+  }
+
+  else if (key === 'b'){
+    if (screenMode !== 'badges'){
+      screenMode = 'badges';
+      mouseMode = 'normal';
+    }
+    else {
+      screenMode = 'normal';
     }
   }
 }
