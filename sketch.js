@@ -35,6 +35,9 @@ function preload(){
   city = loadImage('assets/city.jpg');
   train = loadImage('assets/train.png');
   rail = loadImage('assets/rail.jpg');
+  bronze = loadImage('assets/bronze.png');
+  silver = loadImage('assets/silver.png');
+  gold = loadImage('assets/gold.png');
   Myfont = loadFont('assets/font.ttf');
   traingif1 = createImg('assets/train1.gif');
   traingif2 = createImg('assets/train2.gif');
@@ -82,7 +85,8 @@ function draw() {
       rect(0, gameHeight, width, height - gameHeight);
 
       if (bronzeBadge === true){
-        circle()
+        fill('grey');
+        image(bronze, width/2, gameHeight + 100, 50);
       }
     }
 
@@ -161,7 +165,7 @@ function draw() {
 
   if (totalSatisfaction >= 5 && bronzeBadge === false){
     t3 = millis();
-    bronzebadge = true;
+    bronzeBadge = true;
   }
 }
 
