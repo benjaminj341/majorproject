@@ -1,3 +1,21 @@
+//Cs30 major project
+//Railway Builder
+//Ben Jorgenson
+//January 17th, 2020
+//Mr Schellenberg
+//
+//Beta test results:
+//I beta tested this with my brother. He said that the secotr system was impressive but the game itself was too hard
+//because you only gained several money after every update
+//
+//Reflection:
+//-
+
+
+
+
+
+
 let city;
 let gameWidth = 1500;
 let gameHeight = 600;
@@ -14,10 +32,6 @@ let linepoints = [];
 let newLine = false;
 let t;
 let t2;
-let t3;
-let t4;
-let t5;
-let t6;
 let sectorChange = [-1, 0, 1, 2];
 let totalSatisfaction = 0;
 let mode;
@@ -86,7 +100,17 @@ function draw() {
 
       if (bronzeBadge === true){
         fill('grey');
-        image(bronze, width/2, gameHeight + 100, 50);
+        image(bronze, width/2 - 200, gameHeight, 50, 80);
+      }
+
+      if (silverBadge === true){
+        fill('grey');
+        image(silver, width/2, gameHeight, 50, 80);
+      }
+
+      if (goldBadge === true){
+        fill('grey');
+        image(gold, width/2 + 200, gameHeight, 50, 80);
       }
     }
 
@@ -164,8 +188,15 @@ function draw() {
   }
 
   if (totalSatisfaction >= 5 && bronzeBadge === false){
-    t3 = millis();
     bronzeBadge = true;
+  }
+
+  if (totalSatisfaction >= 10 && silverBadge === false){
+    silverBadge = true;
+  }
+
+  if (totalSatisfaction >= 20 && goldBadge === false){
+    goldBadge = true;
   }
 }
 
@@ -203,7 +234,7 @@ function lineUpdate(){
 
 
 function sectorUpdate(){
-  if (millis() - t >= 20000){
+  if (millis() - t >= 10000){
     let satArray = [];
     for (let i = 0; i < sectors.length; i++){
       for (let j = 0; j < sectors[i].length; j++){
