@@ -133,6 +133,7 @@ function draw() {
       text("Railway Builder", 700, 660);
       textSize(20);
       text("Press M for menu", 1100, 660);
+      text("Press B for badges", 1100, 700);
       image(train, 150, 600, 500, 150);
     }
     //sectorUpdate and lineUpdate are always called at the end
