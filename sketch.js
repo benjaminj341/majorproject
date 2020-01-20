@@ -7,15 +7,12 @@
 //Beta test results:
 //I beta tested this with my brother. He said that the secotr system was impressive but the game itself was too hard
 //because you only gained several money after every update
-//
-//Reflection:
-//-
 
 
 
 
 
-
+//All variables defined
 let city;
 let gameWidth = 1500;
 let gameHeight = 600;
@@ -45,6 +42,7 @@ let bronzeBadge = false;
 let silverBadge = false;
 let goldBadge = false;
 
+//images, font, and gifs loaded in
 function preload(){
   city = loadImage('assets/city.jpg');
   train = loadImage('assets/train.png');
@@ -57,24 +55,32 @@ function preload(){
   traingif2 = createImg('assets/train2.gif');
 }
 
+//sets mode to start, calls makeGrid() function
 function setup() {
   createCanvas(windowWidth, windowHeight);
   makeGrid();
   mode = 'start';
 }
 
+//draw loop
 function draw() {
+
+  //If the mode is play, the program should draw the game board and start the game.
   if (mode === 'play'){
     background(255);
     image(city, 0, 0, gameWidth, gameHeight);  
+
+    //lines, stations and the grid itself is displayed
     displayGrid();
     displayStations();
     displayLines();
 
+    //if the variable screenMode is set to 'menu', the menu has been brought up, so the menu will br brought up
     if (screenMode === "menu"){
       fill(20, 60, 200, 100);
       rect(0, gameHeight, width, height - gameHeight);
 
+      //New station button
       rectMode(CENTER);
       rect(360, 660, 40, 40);
       textSize(20);
@@ -82,6 +88,7 @@ function draw() {
       fill("black");
       rect(360, 660, 20, 20);
 
+      //new line button
       rect(700, 660, 40, 40);
       image(rail, 680, 640, 40, 40);
       textSize(20);
@@ -92,12 +99,16 @@ function draw() {
       fill('black');
       text("Money: " + money , 850, 710);
 
+      //total overall staisfaction is displayed
       text("Satisfaction: " + Math.round(totalSatisfaction), 1200, 710);
     }
+    
+    //if the badges are brought up, one can see how many badges they have
     else if (screenMode === 'badges'){
       fill(20, 60, 200, 100);
       rect(0, gameHeight, width, height - gameHeight);
 
+      //if the variables for each badge is true, that badge will be displayed
       if (bronzeBadge === true){
         fill('grey');
         image(bronze, width/2 - 200, gameHeight, 50, 80);
@@ -114,6 +125,7 @@ function draw() {
       }
     }
 
+    //if the screenMode is neither menu nor badges, the normal screen that you see at the start is displayed
     else{
       fill('green');
       textSize(50);
@@ -123,11 +135,15 @@ function draw() {
       text("Press M for menu", 1100, 660);
       image(train, 150, 600, 500, 150);
     }
+    //sectorUpdate and lineUpdate are always called at the end
     sectorUpdate();
     lineUpdate();
   }
 
+  //if the mode is start, the start screen is displayed
   else if (mode === 'start'){
+
+    //the background changes colour 
     background(backR, backG, backB);
     backR += backRchange;
     backG += backGchange;
@@ -143,6 +159,7 @@ function draw() {
       backBchange = backBchange * -1;
     }
 
+    //loading in gifs, text
     fill("red");
     textSize(150);
     textFont(Myfont);
@@ -164,6 +181,7 @@ function draw() {
     traingif2.position(1000, 200);
   }
 
+  //if the mode is 'rules' the player has chosen to see the rules, and they shouls be displayed
   else if (mode === 'rules'){
     background('red');
 
@@ -180,13 +198,18 @@ function draw() {
     rect(600, 550, 300, 100);
     textSize(50);
     fill("black");
+
+    //"Begin" btton at the bottom of the rules
     text("Begin!", 675, 615);
   }
 
+  //as soon as the game starts, the gifs you see at the opening go away
   if (mode !== "start"){
     removeElements();
   }
 
+  //if the total satisaction crosses a certain point, the player is awarded a badge for their efforts. 
+  //the varaible for said badge is set to true
   if (totalSatisfaction >= 5 && bronzeBadge === false){
     bronzeBadge = true;
   }
@@ -200,9 +223,9 @@ function draw() {
   }
 }
 
+//fundtion lineUpdate. 
 function lineUpdate(){
   if (millis() - t2 >= 10000){
-    console.log("godo");
     for (let i = 0; i < lines.length; i++){
       lines[i].update();
       if (lines[i].health <= 0){
@@ -435,10 +458,10 @@ function displayGrid(){
 
 function keyPressed(){
   if (key === 'm'){
-    if (screenMode === "normal"){
+    if (screenMode !== "menu"){
       screenMode = "menu";
     }
-    else if (screenMode === "menu"){
+    else {
       screenMode = "normal";
       mouseMode = "normal";
     }
