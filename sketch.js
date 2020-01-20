@@ -223,16 +223,21 @@ function draw() {
   }
 }
 
-//fundtion lineUpdate. 
+//the lineUpdate function 
 function lineUpdate(){
+  //every 10 seconds, the function performs it's action
   if (millis() - t2 >= 10000){
     for (let i = 0; i < lines.length; i++){
+      //part of the update is confined within the line class
       lines[i].update();
+      //if the line reaches zero health, it should be removed
       if (lines[i].health <= 0){
+        //move through each sectors and check if the removed line started or ended there
         for (let c = 0; c < sectors.length; c++){
           for (let j = 0; j < sectors[c].length; j++){
             if (lines[i].startX < sectors[c][j].x + sectors[c][j].size && lines[i].startX > sectors[c][j].x){
-              if (lines[i].startY < sectors[c][j].y + sectors[c][j].height && lines[i].startY > sectors[c][j].y){            
+              if (lines[i].startY < sectors[c][j].y + sectors[c][j].height && lines[i].startY > sectors[c][j].y){  
+                //if so, lower the stationCount of that line
                 sectors[c][j].lineCount--;
               }
             }
@@ -248,6 +253,7 @@ function lineUpdate(){
             }
           } 
         }
+        //remove from the lines array
         lines.splice(lines[i]);
       }
     }
@@ -255,16 +261,19 @@ function lineUpdate(){
   }
 }
 
-
+//the sectorUpdate function
 function sectorUpdate(){
+  //this function performs its action every 10 seconds
   if (millis() - t >= 10000){
     let satArray = [];
     for (let i = 0; i < sectors.length; i++){
       for (let j = 0; j < sectors[i].length; j++){
         sectors[i][j].update();
+        //each sector should give its satisfaction value to the satArrayu after being updated
         satArray.push(sectors[i][j].totalSat);
       }
     }
+    //the total satisfaction in calcuated based on the the average of each element in the satArray times 2
     for (let i = 0; i < satArray.length; i++){
       totalSatisfaction += satArray[i];
     }
@@ -273,7 +282,9 @@ function sectorUpdate(){
   }
 }
 
+//mt sector class
 class Sector {
+  //all the necessary information to create the class
   constructor(x, y){
     this.x = x;
     this.y = y;
@@ -291,17 +302,20 @@ class Sector {
     this.totalSat = 0;
   }
   
+  //the sectors display function displays the sector
   display() {
     stroke(2);
     fill(255, 255, 255, this.alpha);
     rect(this.x, this.y, this.size, this.height);
 
+    //if the mosue if hovering over any sector, the stats bix for that sectors should pop up
     if(mouseX < this.x + this.size && mouseX > this.x){
       if (mouseY < this.y + this.height && mouseY > this.y){
         if (mouseMode === "normal"){
           fill(255);
           rect(mouseX, mouseY, 200, 100);
 
+          //drawing the rext box
           textSize(20);
           fill(0);
           text(this.name, mouseX + 10, mouseY + 20);
@@ -312,10 +326,15 @@ class Sector {
       }
     }
   }
+  //when the sector updates, it gives profit to the user as well as changes its statistics
   update(){
+    //the satisfaction is the amount of lines times 5 added to the amount of stations times 10
     this.satisfaction = this.stationCount * 10 + this.lineCount * 5;
+    //the sectors demand changes by a random value from the sectorChange array
     this.demand += random(sectorChange);
 
+    //the amount of profit generated from each sector is determined by the difference between the satisfaction value and the demand value for that sector. Sectors with higher demand values also give more profit if you can lower the gap between demand and satisfaction
+    
     if (this.demand - this.satisfaction >= 20){
       if (this. demand < 10){
         this.profit = 1;
@@ -384,27 +403,32 @@ class Sector {
     if (this.totalSat < 0){
       this.totalSat = 0;
     }
-
+    
+    //each sector gives its profit to the user
     money += Math.round(this.profit);
   }
 
 }
 
+//my station class
 class Station {
+  //all necessary info to create a new station
   constructor(x, y){
     this.x = x;
     this.y = y;
     this.length = 10;
     this.height = 10;
   }
-
+  //the ispaly function draws the station
   display(){
     fill(0);
     rect(this.x, this.y, this.length, this.height);
   }
 }
 
+//my line class
 class Line {
+  //to create a line, two stations must be passed in
   constructor(station1, station2){
     this.startX = station1.x + station1.length/2;
     this.startY = station1.y + station1.height/2;
@@ -416,6 +440,7 @@ class Line {
     this.colour = "green";
   }
 
+  //display draws the line
   display(){
     stroke(this.colour);
     strokeWeight(4);
@@ -424,6 +449,7 @@ class Line {
     strokeWeight(1);
   }
 
+  //update lowers the health value by one and also changes the colour if necessary 
   update(){
     this.health -= 1;
     if (this.health > 60 && this.health <= 100){
@@ -438,16 +464,19 @@ class Line {
   }
 }
 
+//makegrid generates all information needed to make the playable grid
 function makeGrid(){
   for (let x = 0; x < Math.round(gameWidth/cellWidth); x++){
     sectors.push([]);
     for (let y = 0; y < Math.round(gameHeight/cellHeight); y++){    
+      //a new object of the sector class is created and pushed to the sectors array
       newSector = new Sector(x * cellWidth, y * cellHeight);  
       sectors[x].push(newSector);
     }
   }
 }
 
+//this function draws the sectors
 function displayGrid(){
   for (let i = 0; i < sectors.length; i++){
     for (let j = 0; j < sectors[i].length; j++){
@@ -457,6 +486,7 @@ function displayGrid(){
 }
 
 function keyPressed(){
+  //pressing m changes the screenMode to menu
   if (key === 'm'){
     if (screenMode !== "menu"){
       screenMode = "menu";
@@ -466,7 +496,7 @@ function keyPressed(){
       mouseMode = "normal";
     }
   }
-
+  //pressing b allows the user to be shown their badges
   else if (key === 'b'){
     if (screenMode !== 'badges'){
       screenMode = 'badges';
@@ -478,15 +508,18 @@ function keyPressed(){
   }
 }
 
+//if the mouse has been clicked
 function mouseClicked(){
-  console.log(mouseX, mouseY);
+  //if the screenMode is menu
   if (screenMode === "menu"){
+    //check if the user selected the station
     if (mouseX <= 380 && mouseX >= 340){
       if (mouseY <= 680 && mouseY >= 640){ 
+        //if so, change the mouseMode to station
         mouseMode = "station";
       }
     }
-
+    //if the user selected line, cahnge the mouseMode to line
     if (mouseX <= 720 && mouseX >= 680){
       if (mouseY <= 680 && mouseY >= 640){
         mouseMode = "line";
@@ -494,47 +527,59 @@ function mouseClicked(){
     }
   }
   
+  //if the start screen is up, check if the user selected play
   if (mode === "start"){
     if (mouseX >= width/2 - 150 && mouseX <= width/2 - 150 + 300){
       if (mouseY <= height/2 && mouseY >= height/2 - 100){
+        //if so, begin game by changing mode to play
         mode = 'play';
         t = millis();
         t2 = millis();
       }
     }
 
+    //if user selected rules
     if (mouseX >= width/2 - 150 && mouseX <= width/2 - 150 + 300){
       console.log('a')
       if (mouseY <= height/2 + 200 && mouseY >= height/2 + 100){
+        //change mode to rules and bring up rules page
         mode = 'rules';
       }
     }
   }
 
+  //if the mode is already on rules, check if the user selected the begin button at the bottom
   else if (mode === "rules"){
     if (mouseX >= 600 && mouseX <= 900){
       if (mouseY >= 550 && mouseY <= 650){
+        //if so, change begin game by changing mode to play
         mode = 'play';
       }
     }
   }
 
+  //if the mosueMode is on station
   if (mouseMode === "station"){
     if (mouseX > 0 && mouseX < gameWidth){
       if (mouseY > 0 && mouseY < gameHeight){
+        //check if user has enough money
         if (money - 200 >= 0){
+          //create a new object of the station class to place down where ther user clicked
           newStation = new Station(mouseX, mouseY);
+          //push the station to the stations array and take 200 money from the player
           stations.push(newStation);
           money -= 200;
           
+          //take the new station out of the array
           let aNewStation = stations.pop();
           for (let i = 0; i < sectors.length; i++){
             
             for (let j = 0; j < sectors[i].length; j++){   
-              
+              //cross check it against each sector to fuind out where it starts and ends
               if (aNewStation.x > sectors[i][j].x && aNewStation.x < sectors[i][j].x + sectors[i][j].size){
                 
                 if (aNewStation.y > sectors[i][j].y && aNewStation.y < sectors[i][j].y + sectors[i][j].height){
+                  //add one to the stationCount of both sectors and put it back into the array
                   sectors[i][j].stationCount += 1;
                   append(stations, aNewStation);
                   
@@ -546,15 +591,19 @@ function mouseClicked(){
       }
     }
   }
+  //if the mosuemode is on line
   else if (mouseMode === "line"){
     if (mouseX > 0 && mouseX < gameWidth){
       if (mouseY > 0 && mouseY < gameHeight){
+        //check if the player has enough money
         if (money - 50 >= 0){          
+            //check if the player has clicked on a station
             for (let i = 0; i < stations.length; i++){
               if (mouseX < stations[i].x + stations[i].length){
                 if (mouseX > stations[i].x){
                   if (mouseY < stations[i].y + stations[i].length){
                     if (mouseY > stations[i].y){
+                      //if both are true, put the selected station into the linepoints array
                       linepoints.push(stations[i]);
                     } 
                   }
@@ -567,7 +616,7 @@ function mouseClicked(){
     }
   }
 
-
+//goes through the stations array and dispalys each one in its proper place
 function displayStations() {
   for (let i = 0; i < stations.length; i++){
     stations[i].display();
@@ -576,20 +625,26 @@ function displayStations() {
 
 
 function displayLines(){
+  //if the length of the linepoints array reaches 2, a new line must be created
   if (linepoints.length >= 2){
-    if (linepoints[0].x !== linepoints[1].x && linepoints[0].y !== linepoints[1].y){
+    //if they are not the same 
+    if (linepoints[0].x !== linepoints[1].x || linepoints[0].y !== linepoints[1].y){
+      //create a new object of the line class and put it into the lines array
       anewLine = new Line(linepoints[0], linepoints[1]);
       lines.push(anewLine);
       newLine = true;
       linepoints = [];
+      //subtract 50 money from the player
       money -= 50;
 
+      //cross check the new line with the sectors
       for (let c = 0; c < sectors.length; c++){
         for (let j = 0; j < sectors[c].length; j++){
+          //if the line starts or ends in a sector
           if (anewLine.startX < sectors[c][j].x + sectors[c][j].size && anewLine.startX > sectors[c][j].x){
             console.log(1);
             if (anewLine.startY < sectors[c][j].y + sectors[c][j].height && anewLine.startY > sectors[c][j].y){   
-              console.log(2);         
+              //add one to the lineCount of that sector
               sectors[c][j].lineCount++;
             }
           }
@@ -603,6 +658,7 @@ function displayLines(){
     }
   }
 
+  //main use of the function. Goes through the lines array and displays each one.
   for (let i = 0; i < lines.length; i++){
     lines[i].display();
   }
